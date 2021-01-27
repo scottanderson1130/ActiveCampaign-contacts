@@ -1,14 +1,13 @@
 import React from 'react';
 import ContactsList from './ContactsList.jsx'
 
-const ContactsTable = (contacts) => {
-  console.log(contacts)
+const ContactsTable = ({contacts}) => {
+  
   return  (
     <div>
       <table>
         <thead>
         <tr>
-            <th>Id</th>
             <th>Contact</th>
             <th>Phone</th>
             <th>Email</th>
@@ -21,7 +20,7 @@ const ContactsTable = (contacts) => {
               lastName={contact.lastName}
               email={contact.email}
               phone={contact.phone}
-              id={contact.id}
+              key={contact.id}
             />
             )}
         </tbody>
