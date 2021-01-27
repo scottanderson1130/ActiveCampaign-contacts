@@ -1,9 +1,17 @@
-import React from "react"
+import React, { useState, useEffect } from "react"
+import axios from 'axios'
+import ContactsTable from './components/ContactsTable.jsx'
 
 const App = () => {
+  const [contacts, setContacts] = useState([])
+  useEffect(() => {
+    axios.get('/contacts')
+      .then(contacts => setContacts(contacts.data.contacts))
+  }, [])
+  
   return (
     <div>
-      <h1>I'm here</h1>
+      <ContactsTable contacts={contacts}/>
     </div>
   )
 }
