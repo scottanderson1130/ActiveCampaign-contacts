@@ -37,9 +37,9 @@ const phoneFormatter = (number) => {
 const ContactsList = ({firstName, lastName, phone, email}) => {
   return (
       <tr>
-        <td>{firstName} {lastName}</td>
-        <td>{phoneFormatter(phone)}</td>
-        <td>{email}</td>
+        <td className='table-content-name'>{firstName} {lastName}</td>
+        <td className='table-content-phone'>{phoneFormatter(phone)}</td>
+        <td className='table-content-email'>{email}</td>
       </tr>
   )
 }

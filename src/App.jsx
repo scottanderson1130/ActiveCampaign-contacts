@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import axios from 'axios'
 import ContactsTable from './components/ContactsTable.jsx'
+import app from './style/app.css'
+
 
 const App = () => {
   const [contacts, setContacts] = useState([])
@@ -10,7 +12,7 @@ const App = () => {
   }, [])
   
   return (
-    <div>
+    <div className={app}>
       <ContactsTable contacts={contacts}/>
     </div>
   )

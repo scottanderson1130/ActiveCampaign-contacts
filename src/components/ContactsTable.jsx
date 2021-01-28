@@ -1,17 +1,18 @@
 import React from 'react';
 import ContactsList from './ContactsList.jsx'
+import contactsTable from '../style/contactsTable.css'
 
 const ContactsTable = ({contacts}) => {
   
   return  (
-    <div>
-      <table>
+    <div className='container-table'>
+      <table className='content-table'>
         <thead>
-        <tr>
-            <th>Contact</th>
-            <th>Phone</th>
-            <th>Email</th>
-        </tr>
+          <tr className='content-table-head'>
+              <th>Contact</th>
+              <th>Phone</th>
+              <th>Email</th>
+          </tr>
         </thead>
         <tbody>
           {contacts.map(contact => 

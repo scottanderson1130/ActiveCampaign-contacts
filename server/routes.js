@@ -1,12 +1,7 @@
 const routes = require('express').Router();
-const bodyParser = require('body-parser');
-const path = require('path');
 const cors = require('cors');
+const { getContacts, getTags, getDeals, getLocation } = require('./helpers.js');
 
-const getContacts = require('./helpers.js');
-
-// routes.use(bodyParser.json());
-// routes.use(bodyParser.urlencoded({ extended: true }));
 routes.use(
   cors({
     origin: 'http://localhost:8080/',
@@ -15,12 +10,23 @@ routes.use(
 );
 
 routes.get('/', (req, res) => {
-  console.log('here');
   getContacts()
-    .then(data => {
-      res.json(data.data);
+    .then(async contacts => {
+      const contactTags = await getTags(contacts);
+      return contactTags;
     })
-    .catch(err => res.status(400).send(err));
+    .catch(err => console.error(err))
+    .then(async contacts => {
+      const contactDeals = await getDeals(contacts);
+      return contactDeals;
+    })
+    .catch(err => console.error(err))
+    .then(async contacts => {
+      const contactLocal = await getLocation(contacts);
+      console.log(contactLocal);
+      res.send(contactLocal);
+    })
+    .catch(err => console.error(err));
 });
 
 module.exports = routes;
