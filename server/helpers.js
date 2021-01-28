@@ -1,7 +1,7 @@
 const axios = require('axios');
 require('dotenv').config();
 
-TOKEN = process.env.ACTIVE_CAMPAIGN_API_TOKEN;
+const TOKEN = process.env.ACTIVE_CAMPAIGN_API_TOKEN;
 const baseURL = 'https://sahmed93846.api-us1.com/api/3';
 
 /**
