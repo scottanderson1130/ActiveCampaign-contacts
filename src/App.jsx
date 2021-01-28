@@ -6,14 +6,24 @@ import app from './style/app.css'
 
 const App = () => {
   const [contacts, setContacts] = useState([])
+  const [loading, setLoading] = useState(true)
   useEffect(() => {
     axios.get('/contacts')
-      .then(contacts => setContacts(contacts.data.contacts))
+      .then(contacts => {
+        setContacts(contacts.data)
+        setLoading(false)
+      }
+      )
   }, [])
   
   return (
     <div className={app}>
-      <ContactsTable contacts={contacts}/>
+      {loading ? (
+      <div>
+        <h1>Loading Data...</h1>
+      </div>) : 
+      <ContactsTable contacts={contacts}/> 
+      }
     </div>
   )
 }

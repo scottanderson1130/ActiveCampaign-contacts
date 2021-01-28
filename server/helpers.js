@@ -3,6 +3,15 @@ require('dotenv').config();
 
 TOKEN = process.env.ACTIVE_CAMPAIGN_API_TOKEN;
 const baseURL = 'https://sahmed93846.api-us1.com/api/3';
+// ****** EXAMPLE BELOW ***** //
+/**
+ * Number.prototype.format(n, x, s, c)
+ *
+ * @param integer n: length of decimal
+ * @param integer x: length of whole part
+ * @param mixed   s: sections delimiter
+ * @param mixed   c: decimal delimiter
+ */
 
 const parseContacts = contactArray => {
   return contactArray.map(contact => {
@@ -42,11 +51,14 @@ const parseTags = async tagIdsArray => {
         headers: {
           'Api-Token': TOKEN
         }
-      }).then(tags => {
-        const { data } = tags;
-        const { tag } = data;
-        return tag.tag;
-      });
+      })
+        .then(tags => {
+          const { data } = tags;
+          const { tag } = data;
+          return tag.tag;
+        })
+        .catch(err => console.error(err));
+
       return response;
     })
   );
@@ -89,12 +101,15 @@ const getTags = async contactArray => {
           contact['tagIds'] = tagId;
           return contact;
         })
+        .catch(err => console.error(err))
         .then(async contacts => {
           const { tagIds } = contacts;
           const tags = await parseTags(tagIds);
           contact['tags'] = tags;
           return contact;
-        });
+        })
+        .catch(err => console.error(err));
+
       return response;
     })
   );
@@ -112,29 +127,32 @@ const getDeals = async contactArray => {
         headers: {
           'Api-Token': TOKEN
         }
-      }).then(async contactDeals => {
-        const { data } = contactDeals;
-        const { deals } = data;
+      })
+        .then(async contactDeals => {
+          const { data } = contactDeals;
+          const { deals } = data;
 
-        if (deals.length > 0) {
-          const values = await parseDeals(deals);
-          if (values.length > 1) {
-            let value = values.reduce((totalVal, val) => {
-              val = currencyConverter(val.value, val.currency);
-              return totalVal + parseInt(val);
-            }, 0);
-            contact['value'] = value;
-            contact['deals'] = deals.length;
+          if (deals.length > 0) {
+            const values = await parseDeals(deals);
+            if (values.length > 1) {
+              let value = values.reduce((totalVal, val) => {
+                val = currencyConverter(val.value, val.currency);
+                return totalVal + parseInt(val);
+              }, 0);
+              contact['value'] = value;
+              contact['deals'] = deals.length;
+            } else {
+              contact['value'] = parseInt(values[0].value);
+              contact['deals'] = deals.length;
+            }
           } else {
-            contact['value'] = parseInt(values[0].value);
+            contact['value'] = 0;
             contact['deals'] = deals.length;
           }
-        } else {
-          contact['value'] = 0;
-          contact['deals'] = deals.length;
-        }
-        return contact;
-      });
+          return contact;
+        })
+        .catch(err => console.error(err));
+
       return await response;
     })
   );
@@ -148,17 +166,20 @@ const getLocation = async contactArray => {
     headers: {
       'Api-Token': TOKEN
     }
-  }).then(async address => {
-    const addAddress = Promise.all(
-      contactArray.map(async contact => {
-        const { city, state } = address.data.address;
-        contact['city'] = city;
-        contact['state'] = state;
-        return contact;
-      })
-    );
-    return await addAddress;
-  });
+  })
+    .then(async address => {
+      const addAddress = Promise.all(
+        contactArray.map(async contact => {
+          const { city, state } = address.data.address;
+          contact['city'] = city;
+          contact['state'] = state;
+          return contact;
+        })
+      );
+      return await addAddress;
+    })
+    .catch(err => console.error(err));
+
   return await response;
 };
 

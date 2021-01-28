@@ -10,17 +10,22 @@ const ContactsTable = ({contacts}) => {
         <thead>
           <tr className='content-table-head'>
               <th>Contact</th>
-              <th>Phone</th>
-              <th>Email</th>
+              <th>Total Value</th>
+              <th>Location</th>
+              <th>Deals</th>
+              <th>Tags</th>
           </tr>
         </thead>
         <tbody>
-          {contacts.map(contact => 
+          {contacts?.map(contact => 
             <ContactsList 
               firstName={contact.firstName}
               lastName={contact.lastName}
-              email={contact.email}
-              phone={contact.phone}
+              tags={contact.tags}
+              value={contact.value}
+              deals={contact.deals}
+              city={contact.city}
+              state={contact.state}
               key={contact.id}
             />
             )}

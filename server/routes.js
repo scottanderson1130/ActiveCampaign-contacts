@@ -23,7 +23,6 @@ routes.get('/', (req, res) => {
     .catch(err => console.error(err))
     .then(async contacts => {
       const contactLocal = await getLocation(contacts);
-      console.log(contactLocal);
       res.send(contactLocal);
     })
     .catch(err => console.error(err));
