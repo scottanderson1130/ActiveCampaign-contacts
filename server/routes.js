@@ -1,14 +1,23 @@
 const routes = require('express').Router();
-const cors = require('cors');
 const { getContacts, getTags, getDeals, getLocation } = require('./helpers.js');
 
-routes.use(
-  cors({
-    origin: 'http://localhost:8080/',
-    credentials: true
-  })
-);
-
+/**
+ * contacts/ route returning a contact object with parsed data from each contact of /contacts
+ *
+ * @returns {
+ * {
+ * firstName: String,
+ * lastName: String,
+ * id: String,
+ * tagIds: Array,
+ * tags: Array,
+ * value: Integer,
+ * deals: Integer,
+ * city: String,
+ * state: String
+ * }}
+ * *
+ */
 routes.get('/', (req, res) => {
   getContacts()
     .then(async contacts => {

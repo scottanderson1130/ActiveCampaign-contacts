@@ -3,16 +3,13 @@ require('dotenv').config();
 
 TOKEN = process.env.ACTIVE_CAMPAIGN_API_TOKEN;
 const baseURL = 'https://sahmed93846.api-us1.com/api/3';
-// ****** EXAMPLE BELOW ***** //
-/**
- * Number.prototype.format(n, x, s, c)
- *
- * @param integer n: length of decimal
- * @param integer x: length of whole part
- * @param mixed   s: sections delimiter
- * @param mixed   c: decimal delimiter
- */
 
+/**
+ * Map through the full contacts object and return only the firstName, lastName and id
+ * @param {Array} contactArray Object returned from the api call /contacts
+ * @returns {Object}
+ * *
+ */
 const parseContacts = contactArray => {
   return contactArray.map(contact => {
     const { firstName, lastName, id } = contact;
@@ -20,6 +17,12 @@ const parseContacts = contactArray => {
   });
 };
 
+/**
+ * Map through the contactTags object to return a list of all tag id's
+ * @param {Array} contactTags Object returned from the api call /contacts/:id/contactTags
+ * * @returns {Array}
+ * *
+ */
 const parseTagId = contactTags => {
   return contactTags.map(tagId => {
     const { id } = tagId;
@@ -27,6 +30,12 @@ const parseTagId = contactTags => {
   });
 };
 
+/**
+ * Map through the deals Object to return an object of the value and currency
+ * @param {Array} contactDealsArray Object returned from the api call /contacts/:id/deals
+ * @returns {Object}
+ * *
+ */
 const parseDeals = contactDealsArray => {
   return contactDealsArray.map(contact => {
     const { value, currency } = contact;
@@ -34,6 +43,14 @@ const parseDeals = contactDealsArray => {
   });
 };
 
+/**
+ * Converts incoming currency to USD. (Only includes AUD and EUR conversion)
+ * Calculation to convert to monetary value will by done on the Front End
+ * @param {String/Integer} value Integer to be converted to USD
+ * @param {String} unit Unit to base conversion to USD
+ * @returns {Integer} USD conversion
+ * *
+ */
 const currencyConverter = (value, unit) => {
   let dollars;
   if (unit === 'aud') dollars = Math.floor(parseInt(value * 0.768301));
@@ -42,6 +59,12 @@ const currencyConverter = (value, unit) => {
   return dollars;
 };
 
+/**
+ * API call to grab all the tag info from a given contact id
+ * @param {Array} tagIdsArray Tag id's that are returned from parseTagId
+ * @returns {Array} Returns an Array of multiple tags.
+ * *
+ */
 const parseTags = async tagIdsArray => {
   const asyncResp = Promise.all(
     tagIdsArray.map(async id => {
@@ -65,6 +88,11 @@ const parseTags = async tagIdsArray => {
   return await asyncResp;
 };
 
+/**
+ * API call to grab all the contacts and return the relevant contact info
+ * @returns {Object} firstName, lastName, id
+ * *
+ */
 const getContacts = async () => {
   try {
     const response = await axios({
@@ -84,6 +112,12 @@ const getContacts = async () => {
   }
 };
 
+/**
+ * API call to grab all the tags and return an in an array
+ * Adds the tags and tagIds array to the contact object
+ * @returns {Array} tags
+ * *
+ */
 const getTags = async contactArray => {
   const asyncResults = Promise.all(
     contactArray.map(async contact => {
@@ -116,6 +150,15 @@ const getTags = async contactArray => {
   return await asyncResults;
 };
 
+/**
+ * API call to grab all the deals and return the number of deals and the total value if more than 1
+ * If no deals are found, value will be returned as 0.
+ * All values will be returned in USD
+ * Adds the tags and tagIds array to the contact object
+ * @returns {Integer} value
+ * @returns {Integer} deals
+ * *
+ */
 const getDeals = async contactArray => {
   const asyncResponse = Promise.all(
     contactArray.map(async contact => {
@@ -159,6 +202,13 @@ const getDeals = async contactArray => {
   return await asyncResponse;
 };
 
+/**
+ * API call to grab get the location of the contact
+ * Only 1 contact info given in the API and returned for each contact
+ * @returns {String} city
+ * @returns {String} state
+ * *
+ */
 const getLocation = async contactArray => {
   const response = await axios({
     method: 'get',
